@@ -3,6 +3,9 @@
 	import { data } from '$lib/data.js';
 
 	export let selectedPlot;
+	let prevSelectedPlot;
+
+	let map;
 
 	let isHovered = false;
 	let x;
@@ -30,27 +33,41 @@
 		title = null;
 	};
 
-	const focus = (e) => {
-		e.target.classList.add('fill-blue-500');
-		selectedPlot = e.target.id;
+	const click = (e) => {
+		e.stopPropagation();
+		if (e.target.id === 'map') {
+			selectedPlot = null;
+		} else if (selectedPlot !== e.target.id) {
+			selectedPlot = e.target.id;
+		} else {
+			selectedPlot = null;
+		}
 	};
 
-	const blur = (e) => {
-		e.target.classList.remove('fill-blue-500');
-		selectedPlot = null;
-	};
+	function updateSelected() {
+		map?.getElementById(selectedPlot)?.classList.add('fill-blue-500');
+		map?.getElementById(prevSelectedPlot)?.classList.remove('fill-blue-500');
+		prevSelectedPlot = selectedPlot;
+	}
+
+	$: selectedPlot, updateSelected();
 
 	onMount(() => {
 		document.querySelectorAll('title').forEach((title) => title.remove());
 
+		map = document.getElementById('map');
+
 		let paths = document.querySelectorAll('path');
+
+		map.addEventListener('click', click);
 
 		paths.forEach((path) => {
 			path.addEventListener('mouseenter', mouseenter);
 			path.addEventListener('mousemove', mousemove);
 			path.addEventListener('mouseleave', mouseleave);
-			path.addEventListener('focus', focus);
-			path.addEventListener('blur', blur);
+			path.addEventListener('click', click);
+			// path.addEventListener('focus', focus);
+			// path.addEventListener('blur', blur);
 		});
 
 		return () => {
@@ -58,8 +75,9 @@
 				path.removeEventListener('mouseenter', mouseenter);
 				path.removeEventListener('mousemove', mousemove);
 				path.removeEventListener('mouseleave', mouseleave);
-				path.removeEventListener('focus', focus);
-				path.removeEventListener('blur', blur);
+				path.removeEventListener('click', click);
+				// path.removeEventListener('focus', focus);
+				// path.removeEventListener('blur', blur);
 			});
 		};
 	});
@@ -1965,7 +1983,7 @@
 
 <style>
 	path:not(.fill-blue-500):hover {
-		@apply fill-gray-600;
+		@apply fill-gray-700;
 	}
 
 	path:focus {
