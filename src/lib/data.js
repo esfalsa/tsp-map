@@ -43,7 +43,8 @@ export const data = {
 		abortion: 'Always legal',
 		sport: '',
 		speedLimit: '100 km/h',
-		drivingSide: 'Right'
+		drivingSide: 'Right',
+		area: 79301
 	},
 	'033': {
 		name: 'Esfalsa',
@@ -89,6 +90,7 @@ export const data = {
 		abortion: 'Always legal',
 		sport: 'Football',
 		speedLimit: '125 km/h',
-		drivingSide: 'Right'
+		drivingSide: 'Right',
+		area: 65987
 	}
 };
